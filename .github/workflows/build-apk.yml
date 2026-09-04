@@ -43,12 +43,12 @@ jobs:
           python -m pip install --upgrade buildozer
 
       - name: Build APK
-  run: |
-    buildozer -v android debug > build.log 2>&1
+        run: |
+          buildozer -v android debug > build.log 2>&1
 
-- name: Show build error
-  if: always()
-  run: |
-    echo "===== BUILD LOG (LAST 100 LINES) ====="
-    tail -n 100 build.log
+      - name: Show build error
+        if: always()
+        run: |
+         echo "===== BUILD LOG (LAST 100 LINES) ====="
+         tail -n 100 build.log
          
