@@ -44,7 +44,7 @@ jobs:
 
       - name: Build APK
         run: |
-          buildozer -v android debug > build.log 2>&1
+          buildozer -v android debug 2>&1 | tee build.log
 
       - name: Show build error
         if: always()
