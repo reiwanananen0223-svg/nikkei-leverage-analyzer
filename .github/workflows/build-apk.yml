@@ -44,4 +44,4 @@ jobs:
 
       - name: Build APK
         run: |
-          yes | buildozer -v android
+         buildozer -v android
