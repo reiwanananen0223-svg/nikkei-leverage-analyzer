@@ -1,4 +1,4 @@
-name: Build Android APK
+debug Build Android APK
 
 on:
   workflow_dispatch:
@@ -43,6 +43,12 @@ jobs:
           python -m pip install --upgrade buildozer
 
       - name: Build APK
-        run: |
-         buildozer -v android debug
+  run: |
+    buildozer -v android debug > build.log 2>&1
+
+- name: Show build error
+  if: always()
+  run: |
+    echo "===== BUILD LOG (LAST 100 LINES) ====="
+    tail -n 100 build.log
          
