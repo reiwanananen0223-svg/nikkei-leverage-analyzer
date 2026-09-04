@@ -1,4 +1,4 @@
-debug Build Android APK
+neme: Build Android APK
 
 on:
   workflow_dispatch:
