@@ -1,4 +1,4 @@
-name: Build Android APK - Stable
+name: Build Android APK - Docker
 
 on:
   workflow_dispatch:
@@ -14,48 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Set up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Install system dependencies
+      - name: Build APK with Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git \
-            zip \
-            unzip \
-            autoconf \
-            automake \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libffi-dev \
-            libssl-dev \
-            cmake \
-            libltdl-dev
+          docker pull kivy/buildozer:latest
+          docker run --rm \
+            --volume "$PWD":/home/user/hostcwd \
+            kivy/buildozer:latest \
+            android debug
 
-      - name: Install Buildozer
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install \
-            "buildozer==1.5.0" \
-            "cython==0.29.34"
-
-      - name: Build APK
-        run: |
-          buildozer -v android debug
-
-      - name: Show build result
+      - name: Check APK
         if: always()
         run: |
           echo "===== APK FILES ====="
