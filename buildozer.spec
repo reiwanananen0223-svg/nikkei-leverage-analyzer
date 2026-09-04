@@ -15,6 +15,7 @@ android.permissions = INTERNET
 # Keep the first build simple.
 android.api = 35
 android.minapi = 23
+android.accept_sdk_license = True
 
 [buildozer]
 log_level = 2
