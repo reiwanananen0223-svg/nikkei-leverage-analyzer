@@ -22,11 +22,11 @@ jobs:
 
           docker run --rm \
             --volume "$PWD":/home/user/hostcwd \
-            --entrypoint /bin/sh \
+            --entrypoint /bin/bash \
             kivy/buildozer:latest \
-            -c 'cd /home/user/hostcwd && \
-                python3 -m pip install --user "Cython<3" && \
-                buildozer -v android debug 2>&1 | tee build.log'
+            -lc 'cd /home/user/hostcwd && \
+                 python3 -m pip install "Cython<3" && \
+                 buildozer -v android debug 2>&1 | tee build.log'
 
       - name: Check APK
         if: always()
