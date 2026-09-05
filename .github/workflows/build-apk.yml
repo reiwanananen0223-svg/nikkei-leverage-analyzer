@@ -1,4 +1,4 @@
-name: Build Android APK - Docker
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -16,17 +16,30 @@ jobs:
 
       - name: Build APK with Docker
         run: |
+          rm -rf .buildozer bin
+
           docker pull kivy/buildozer:latest
+
           docker run --rm \
             --volume "$PWD":/home/user/hostcwd \
+            --entrypoint /bin/sh \
             kivy/buildozer:latest \
-            android debug
+            -c 'cd /home/user/hostcwd && \
+                python3 -m pip install --user "Cython<3" && \
+                buildozer -v android debug 2>&1 | tee build.log'
 
       - name: Check APK
         if: always()
         run: |
           echo "===== APK FILES ====="
           find bin -maxdepth 1 -type f -name "*.apk" -print 2>/dev/null || true
+
+          echo "===== BUILD ERRORS ====="
+          if [ -f build.log ]; then
+            grep -inE "error:|fatal:|failed|exception" build.log | tail -n 50 || true
+            echo "===== LAST 50 LINES ====="
+            tail -n 50 build.log
+          fi
 
       - name: Upload APK
         if: success()
@@ -35,3 +48,11 @@ jobs:
           name: nikkei-leverage-analyzer-apk
           path: bin/*.apk
           if-no-files-found: error
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
